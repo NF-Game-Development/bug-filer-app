@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bug Reporter Login</title>
+    <style>
+        body { font-family: sans-serif; max-width: 480px; margin: 80px auto; padding: 0 16px; }
+    </style>
+</head>
+<body>
+    <h2 id="msg">Logging you in...</h2>
+    <script>
+        const code = new URLSearchParams(location.search).get("code");
+
+        if (!code) {
+            document.getElementById("msg").textContent = "No authorization code found.";
+        } else {
+            fetch("http://localhost:8123/", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ code })
+            })
+            .then(r => {
+                document.getElementById("msg").textContent = r.ok
+                    ? "Login successful. You can close this tab."
+                    : "Bug Reporter returned an error. Try logging in again.";
+            })
+            .catch(() => {
+                document.getElementById("msg").textContent =
+                    "Could not connect to Bug Reporter. Make sure the app is open and try again.";
+            });
+        }
+    </script>
+</body>
+</html>
